@@ -4,6 +4,11 @@ import App from './App.jsx'
 import './index.css'
 import {Home,Profile,Login,Register} from './pages'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import {Provider} from 'react-redux'
+import store from './app/store.js'
+import axios from 'axios'
+
+axios.defaults.baseURL = import.meta.env.VITE_SERVER;
 
 const Layout = () => {
   const router = createBrowserRouter(
@@ -22,7 +27,7 @@ const Layout = () => {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  <Provider store={store}>
     <Layout />
-  </React.StrictMode>,
+  </Provider>,
 )

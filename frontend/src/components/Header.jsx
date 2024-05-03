@@ -7,8 +7,12 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaMicrophone } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const {user} = useSelector((state) => state.user)
+  console.log(user)
+  const avatar = user?.data.data.user.avatar
   return (
     <header className="shadow sticky z-50 top-0">
       <nav className="bg-white border-gray-200">
@@ -48,12 +52,15 @@ const Header = () => {
                 <HiDotsVertical />
               </IconContext.Provider>
             </button>
+            {user ? <button>
+              <img src={avatar} alt="avatar" className="h-8 w-8 object-cover rounded-full" />
+            </button> :
             <Link to="/login" className="flex gap-2 justify-center items-center py-1.5 px-3 rounded-full border-2 border-gray-100 hover:bg-blue-100">
               <IconContext.Provider value={{ size: "20px", color:'#4487de' }}>
               <CgProfile />
               </IconContext.Provider>
               <p className="text-blue-500 font-medium">Sign in</p>
-            </Link>
+            </Link>}
           </div>
         </div>
       </nav>
