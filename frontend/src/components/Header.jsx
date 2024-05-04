@@ -7,12 +7,16 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaMicrophone } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../features/userSlice";
 
 const Header = () => {
   const {user} = useSelector((state) => state.user)
-  console.log(user)
-  const avatar = user?.data.data.user.avatar
+  const avatar = user?.avatar
+  const dispatch = useDispatch()
+  const logout = () => {
+    dispatch(logoutUser())
+  }
   return (
     <header className="shadow sticky z-50 top-0">
       <nav className="bg-white border-gray-200">
@@ -52,9 +56,15 @@ const Header = () => {
                 <HiDotsVertical />
               </IconContext.Provider>
             </button>
-            {user ? <button>
-              <img src={avatar} alt="avatar" className="h-8 w-8 object-cover rounded-full" />
-            </button> :
+            {user ? <div className="flex justify-center items-center gap-3 ">
+             <button
+            onClick={logout}
+            className="block px-2 py-2 bg-blue-200 rounded-lg border-gray-300 text-gray-800 hover:bg-gray-200 w-full"
+          >
+            Logout
+          </button>
+          <img src={avatar} alt="avatar" className="h-8 w-8 object-cover rounded-full" />
+          </div> :
             <Link to="/login" className="flex gap-2 justify-center items-center py-1.5 px-3 rounded-full border-2 border-gray-100 hover:bg-blue-100">
               <IconContext.Provider value={{ size: "20px", color:'#4487de' }}>
               <CgProfile />
