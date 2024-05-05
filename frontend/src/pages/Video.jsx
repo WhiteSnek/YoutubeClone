@@ -19,13 +19,13 @@ const Video = () => {
       }
     });
   }, []);
-  console.log(video);
+  console.log(video._id);
   if (video)
     return (
       <div className="grid grid-cols-12 my-6 mx-24 gap-6">
         <div className="col-span-8">
         <VideoSection video={video} />
-        <CommentSection />
+        <CommentSection videoId={video._id} />
         </div>
         <div className="col-span-4">
             <RecommendedVideos />

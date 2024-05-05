@@ -23,7 +23,6 @@ export const getVideoById = createAsyncThunk(
     async(id) => {
         try {
             const video = await axios.get(`/videos/${id}`,{withCredentials:true})
-            console.log(video)
             return video.data.data
         } catch (error) {
             const errorMessage = error.response.data.match(

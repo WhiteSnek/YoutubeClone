@@ -12,8 +12,6 @@ const Videos = () => {
     const { video } = useSelector(state => state.video)
     const videoFiles = video.videos
 
-    console.log(videoFiles)
-
     if (videoFiles) {
         return (
             <div className='grid grid-cols-12 gap-4 h-screen w-full'>
