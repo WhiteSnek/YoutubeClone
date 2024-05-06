@@ -71,6 +71,7 @@ const Header = () => {
               </IconContext.Provider>
               <p className="text-blue-500 font-medium">Sign in</p>
             </Link>}
+            
           </div>
         </div>
       </nav>

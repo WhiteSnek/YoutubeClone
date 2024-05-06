@@ -19,6 +19,23 @@ export const getComments = createAsyncThunk(
   }
 );
 
+export const postComment = createAsyncThunk(
+  "comment/postComment",
+  async(videoId,content) => {
+    try {
+      const comment = await axios.post(`/${videoId}`,{content},{withCredentials:true});
+      console.log(comment);
+      return comment;
+    } catch (error) {
+      const errorMessage = error.response.data.match(
+        /<pre>Error: (.*?)<br>/
+      )[1];
+
+      throw Error(errorMessage);
+    }
+  }
+)
+
 const commentSlice = createSlice({
   name: "comment",
   initialState: {
@@ -38,6 +55,21 @@ const commentSlice = createSlice({
         state.error = null
     })
     .addCase(getComments.rejected, (state,action) =>{
+        state.loading = false;
+        state.comment = [];
+        state.error = action.error?.message
+    })
+    .addCase(postComment.pending, (state)=>{
+      state.loading = true;
+        state.comment = [];
+        state.error = null
+    })
+    .addCase(postComment.fulfilled, (state,action)=>{
+        state.loading = false;
+        state.comment = action.payload;
+        state.error = null
+    })
+    .addCase(postComment.rejected, (state,action) =>{
         state.loading = false;
         state.comment = [];
         state.error = action.error?.message
