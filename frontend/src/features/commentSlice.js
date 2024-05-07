@@ -21,11 +21,11 @@ export const getComments = createAsyncThunk(
 
 export const postComment = createAsyncThunk(
   "comment/postComment",
-  async(videoId,content) => {
+  async({videoId,content}) => {
     try {
-      const comment = await axios.post(`/${videoId}`,{content},{withCredentials:true});
+      const comment = await axios.post(`/comments/${videoId}`,{content},{withCredentials:true});
       console.log(comment);
-      return comment;
+      return comment.data.data;
     } catch (error) {
       const errorMessage = error.response.data.match(
         /<pre>Error: (.*?)<br>/
@@ -61,12 +61,11 @@ const commentSlice = createSlice({
     })
     .addCase(postComment.pending, (state)=>{
       state.loading = true;
-        state.comment = [];
-        state.error = null
+      state.error = null
     })
     .addCase(postComment.fulfilled, (state,action)=>{
         state.loading = false;
-        state.comment = action.payload;
+        state.comment.push(action.payload);
         state.error = null
     })
     .addCase(postComment.rejected, (state,action) =>{

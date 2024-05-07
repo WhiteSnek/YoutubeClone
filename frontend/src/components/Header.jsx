@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IconContext } from "react-icons/lib";
@@ -12,10 +12,12 @@ import { logoutUser } from "../features/userSlice";
 
 const Header = () => {
   const {user} = useSelector((state) => state.user)
+  const navigate = useNavigate()
   const avatar = user?.avatar
   const dispatch = useDispatch()
   const logout = () => {
     dispatch(logoutUser())
+    navigate('/')
   }
   return (
     <header className="shadow sticky z-50 top-0">

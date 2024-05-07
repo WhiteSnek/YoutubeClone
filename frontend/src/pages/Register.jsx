@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { registerUser } from "../features/userSlice";
+import { loginUser, registerUser } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Logo from '../assets/logo.svg'
 import { Link, useNavigate } from "react-router-dom";
@@ -36,17 +36,20 @@ const Register = () => {
     formData.append("coverImage", coverImage);
     dispatch(registerUser(formData)).then((result) => {
       if (result.payload) {
-        setDetails({
-          fullname: "",
-          username: "",
-          email: "",
-          password: "",
-          avatar: null,
-          avatarUrl: "",
-          coverImage: null,
-          coverImageUrl: "",
-        });
-        navigate("/");
+        dispatch(loginUser({email,password})).then((result) => {
+          setDetails({
+            fullname: "",
+            username: "",
+            email: "",
+            password: "",
+            avatar: null,
+            avatarUrl: "",
+            coverImage: null,
+            coverImageUrl: "",
+          });
+          navigate("/");
+        })
+        
       }
     });
   };

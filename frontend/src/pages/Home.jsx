@@ -2,7 +2,7 @@ import React from 'react'
 import Sidebar from '../components/Sidebar'
 import { useSelector } from 'react-redux'
 import Videos from '../components/Videos'
-
+// TODO: user is logged in while the in the backend it's logged out. fixed that
 const Home = () => {
   const {user} = useSelector((state) => state.user)
   return (
