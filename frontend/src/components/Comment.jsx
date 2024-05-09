@@ -18,7 +18,7 @@ const Comment = ({ comment }) => {
     
   }
   return (
-    <div className="grid grid-cols-12 mt-10 gap-4">
+    <div className="grid grid-cols-12 mt-10 gap-4 ">
       <div className="col-span-1 flex justify-center items-start">
         <img
           src={comment.owner[0].avatar}
