@@ -3,6 +3,7 @@ import userReducer from '../features/userSlice.js'
 import videoReducer from '../features/videoSlice.js'
 import commentReducer from '../features/commentSlice.js'
 import likeReducer from '../features/likeSlice.js'
+import showReducer from '../features/showSlice.js'
 import storage from 'redux-persist/lib/storage'
 import {persistReducer} from "redux-persist"
 import { combineReducers } from '@reduxjs/toolkit'
@@ -17,7 +18,8 @@ const reducer = combineReducers({
     user: userReducer,
     video: videoReducer,
     comment: commentReducer,
-    like: likeReducer
+    like: likeReducer,
+    show: showReducer
 });
 const persistedReducer = persistReducer(persistConfig, reducer)
 

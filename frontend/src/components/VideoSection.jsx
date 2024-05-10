@@ -3,6 +3,7 @@ import { IconContext } from "react-icons/lib";
 import { CiBellOn } from "react-icons/ci";
 import { formatRelativeTime } from "../utils/formatRelativeTime";
 import VideoPlayer from "./VideoPlayer";
+import VideoLike from "./VideoLike";
 const VideoSection = ({ video }) => {
     const playerRef = React.useRef(null);
 
@@ -46,6 +47,7 @@ const VideoSection = ({ video }) => {
           </IconContext.Provider>
           Subscribe
         </button>
+        <VideoLike video={video} />
       </div>
       <div className="my-2 bg-gray-100 p-4 rounded-lg">
         <div className="flex gap-4 font-semibold">

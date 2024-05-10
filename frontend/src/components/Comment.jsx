@@ -5,6 +5,7 @@ import { AiFillLike } from "react-icons/ai";
 import { IconContext } from "react-icons/lib";
 import { useDispatch } from "react-redux";
 import { toggleCommentLike } from "../features/likeSlice";
+import { Link } from "react-router-dom";
 
 const Comment = ({ comment }) => {
   const dispatch = useDispatch();
@@ -20,11 +21,12 @@ const Comment = ({ comment }) => {
   return (
     <div className="grid grid-cols-12 mt-10 gap-4 ">
       <div className="col-span-1 flex justify-center items-start">
-        <img
+        <Link to={`/${comment.owner[0].username}`}><img
           src={comment.owner[0].avatar}
           alt="avatar"
           className="h-8 w-8  rounded-full object-cover"
         />
+        </Link>
       </div>
       <div className="col-span-11">
         <div className="flex gap-2 items-center text-sm">

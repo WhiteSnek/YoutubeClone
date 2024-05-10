@@ -9,22 +9,29 @@ import { HiDotsVertical } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../features/userSlice";
-
+import {setShow } from '../features/showSlice'
 const Header = () => {
+  
+  const show = useSelector((state) => state.show); // Accessing the 'show' state from Redux store
+
+  const toggleShow = () => {
+    dispatch(setShow(!show));
+  };
   const {user} = useSelector((state) => state.user)
+  console.log(user)
   const navigate = useNavigate()
   const avatar = user?.avatar
   const dispatch = useDispatch()
   const logout = () => {
-    dispatch(logoutUser())
-    navigate('/')
+    dispatch(logoutUser()).then(navigate('/'))
+    
   }
   return (
     <header className="shadow sticky z-50 top-0">
       <nav className="bg-white border-gray-200">
         <div className="flex flex-wrap justify-between items-center mx-4 w-screen-xl">
           <div className="flex gap-4 justify-center items-center">
-            <button className="rounded-full hover:bg-gray-200 p-2">
+            <button className="rounded-full hover:bg-gray-200 p-2" onClick={()=>toggleShow()}>
               <IconContext.Provider value={{ size: "25px", color: "gray" }}>
                 <GiHamburgerMenu />
               </IconContext.Provider>

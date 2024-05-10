@@ -12,7 +12,6 @@ const Videos = () => {
     const { video } = useSelector(state => state.video)
     const videoFiles = video.videos
     const {error} = useSelector(state=>state.video)
-    console.log(error)
     if (videoFiles) {
         return (
             <div className='grid grid-cols-12 gap-4 h-screen w-full'>

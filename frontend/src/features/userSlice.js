@@ -65,11 +65,28 @@ export const getCurrentUser = createAsyncThunk(
     }
 )
 
+export const getUserByUsername = createAsyncThunk(
+    'user/getUserByUsername',
+    async(username) => {
+        try {
+            const user = await axios.get(`/users/c/${username}`,{withCredentials:true})
+            return user.data.data
+        } catch (error) {
+            const errorMessage = error.response.data.match(
+                /<pre>Error: (.*?)<br>/
+              )[1];
+              
+              throw Error(errorMessage)
+        }
+    }
+)
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
         loading: false,
         user: null,
+        newUser: null,
         error: null
     },
     extraReducers: (builder) => {
@@ -131,7 +148,21 @@ const userSlice = createSlice({
         .addCase(getCurrentUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message || 'Failed to fetch current user';
-        });
+        })
+        .addCase(getUserByUsername.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getUserByUsername.fulfilled, (state,action) => {
+            state.loading = false;
+            state.newUser = action.payload
+            state.error = null;
+        })
+        .addCase(getUserByUsername.rejected, (state,action) => {
+            state.loading = false;
+            
+            state.error = action.error.message;
+        })
     }
 })
 
