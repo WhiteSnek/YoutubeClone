@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import { getVideos } from '../features/videoSlice'
+import { Link } from 'react-router-dom'
 import { formatRelativeTime } from '../utils/formatRelativeTime'
-
-const VideosCard = ({item}) =>{
+// TODO: When the user clicks on the video card it navigates to the same page. Fix that
+export const VideosCard = ({item}) =>{
   const [isHovered, setIsHovered] = useState(false);
   return (
-    <div className='flex gap-4 m-4'>
+    <Link to={`/videos/${item._id}`} className='flex gap-4 m-4'>
       {isHovered ? (
                 <video
                     src={item.videoFile}
@@ -25,7 +26,7 @@ const VideosCard = ({item}) =>{
                     onMouseLeave={() => setIsHovered(false)}
                 />
             )}
-      <div className='flex flex-col gap-4 justify-center'>
+      <div className='flex flex-col gap-4 '>
         <h1 className='font-bold text-xl'>{item.title}</h1>
         <div className='font-medium text-gray-600 text-sm'>
           <p>{item.owner.fullname}</p>
@@ -35,7 +36,7 @@ const VideosCard = ({item}) =>{
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
@@ -49,7 +50,6 @@ const RecommendedVideos = () => {
       }
     })
   },[])
-  console.log(video)
   return (
     <div>
       Recommended videos

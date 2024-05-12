@@ -4,11 +4,13 @@ import { useParams } from 'react-router-dom'
 import { getUserByUsername } from '../features/userSlice'
 import { IconContext } from "react-icons/lib";
 import { CiBellOn } from "react-icons/ci";
+import Sidebar from '../components/Sidebar';
 
 const Profile = () => {
   const {username} = useParams()
   const [thisUser, setThisUser] = useState({})
   const {user} = useSelector(state=>state.user)
+  const show = useSelector(state=>state.show)
   const dispatch = useDispatch()
   useEffect(()=>{
     dispatch(getUserByUsername(username)).then((result)=>{
@@ -17,10 +19,11 @@ const Profile = () => {
       }
     })
   },[])
-  console.log(thisUser)
+
   return (
-    <div className=''>
-      <div className='flex gap-10 p-10'>
+    <div className='grid grid-cols-12'>
+      {show && <div className="col-span-2 bg-white"><Sidebar /></div>}
+      <div className={`flex gap-10 p-10 ${show?"col-span-10":"col-span-12"}`}>
         <img src={thisUser.avatar} alt='avatar' className='aspect-square h-40 rounded-full object-cover' />
         <div className=''>
           <h1 className='font-bold text-4xl'>{thisUser.fullname}</h1>

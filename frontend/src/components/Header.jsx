@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -10,20 +10,30 @@ import { CgProfile } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../features/userSlice";
 import {setShow } from '../features/showSlice'
+import { getCurrentUser } from "../features/userSlice";
 const Header = () => {
-  
+  const [user,setUser] = useState(null)
   const show = useSelector((state) => state.show); // Accessing the 'show' state from Redux store
-
+  useEffect(()=>{
+    dispatch(getCurrentUser()).then((result)=>{
+      if(result.payload){
+        setUser(result.payload)
+      }
+    })
+  },[])
   const toggleShow = () => {
     dispatch(setShow(!show));
   };
-  const {user} = useSelector((state) => state.user)
-  console.log(user)
+  
   const navigate = useNavigate()
   const avatar = user?.avatar
   const dispatch = useDispatch()
   const logout = () => {
-    dispatch(logoutUser()).then(navigate('/'))
+    dispatch(logoutUser()).then(() =>
+      {
+        navigate('/')
+        setUser(null)
+      })
     
   }
   return (

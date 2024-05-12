@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-import {Home,Profile,Login,Register,Video} from './pages'
+import {Home,Profile,Login,Register,Video, History, PlayLists, SpecificPlaylist} from './pages'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import {Provider} from 'react-redux'
 import store from './app/store.js'
@@ -21,6 +21,9 @@ const Layout = () => {
         <Route path='register' element={<Register/>} />
         <Route path=':username' element={<Profile/>} />
         <Route path='videos/:id' element={<Video/>} />
+        <Route path='history' element={<History/>} />
+        <Route path='playlist' element={<PlayLists/>} />
+        <Route path='playlist/:playlistId' element={<SpecificPlaylist/>} />
       </Route>
     )
   )

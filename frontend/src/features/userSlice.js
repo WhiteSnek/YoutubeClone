@@ -53,7 +53,6 @@ export const getCurrentUser = createAsyncThunk(
     async() => {
         try {
             const user = await axios.get('/users/current-user',{withCredentials:true});
-            console.log(user.data.data.fullname)
             return user.data.data
         } catch (error) {
             const errorMessage = error.response.data.match(
@@ -81,12 +80,47 @@ export const getUserByUsername = createAsyncThunk(
     }
 )
 
+export const getUserHistory = createAsyncThunk(
+    'user/getUserHistory',
+    async() => {
+        try {
+            const history = await axios.get('/users/history',{withCredentials:true});
+            return history.data.data;
+        } catch (error) {
+            const errorMessage = error.response.data.match(
+                /<pre>Error: (.*?)<br>/
+              )[1];
+              
+              throw Error(errorMessage)
+        }
+    }
+)
+
+export const addVideoToHistory = createAsyncThunk(
+    'user/addVideoToHistory',
+    async(id) => {
+        try {
+            console.log("Video Id: ",id)
+            const addVideo = await axios.patch(`/users/v/${id}`,{},{withCredentials:true})
+            console.log(addVideo)
+            return addVideo
+        } catch (error) {
+            const errorMessage = error.response.data.match(
+                /<pre>Error: (.*?)<br>/
+              )[1];
+              console.log("Add video to history error: ",errorMessage)
+              throw Error(errorMessage)
+        }
+    }
+)
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
         loading: false,
         user: null,
         newUser: null,
+        history: null,
         error: null
     },
     extraReducers: (builder) => {
@@ -161,6 +195,32 @@ const userSlice = createSlice({
         .addCase(getUserByUsername.rejected, (state,action) => {
             state.loading = false;
             
+            state.error = action.error.message;
+        })
+        .addCase(getUserHistory.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getUserHistory.fulfilled, (state,action) => {
+            state.loading = false;
+            state.history = action.payload
+            state.error = null;
+        })
+        .addCase(getUserHistory.rejected, (state,action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+        .addCase(addVideoToHistory.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(addVideoToHistory.fulfilled, (state,action) => {
+            state.loading = false;
+            state.error = null;
+        })
+        .addCase(addVideoToHistory.rejected, (state,action) => {
+            state.loading = false;
+            console.log(action.error)
             state.error = action.error.message;
         })
     }

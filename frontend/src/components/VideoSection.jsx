@@ -1,34 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { IconContext } from "react-icons/lib";
 import { CiBellOn } from "react-icons/ci";
+import { MdPlaylistAdd } from "react-icons/md";
 import { formatRelativeTime } from "../utils/formatRelativeTime";
 import VideoPlayer from "./VideoPlayer";
 import VideoLike from "./VideoLike";
+import { useDispatch, useSelector } from "react-redux";
+import { addVideoToPlaylist } from "../features/playlistSlice";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 const VideoSection = ({ video }) => {
-    const playerRef = React.useRef(null);
-
+  const playerRef = React.useRef(null);
+  const dispatch = useDispatch();
+  // const [playlistId,setPlaylistId] = useState('')
+  const {playlist} = useSelector(state => state.playlist)
+  // console.log(playlistId)
   const videoJsOptions = {
     autoplay: true,
     controls: true,
     responsive: true,
     fluid: true,
-    sources: [{
-      src: video.videoFile,
-      type: 'video/mp4'
-    }]
+    sources: [
+      {
+        src: video.videoFile,
+        type: "video/mp4",
+      },
+    ],
   };
 
   const handlePlayerReady = (player) => {
     playerRef.current = player;
 
     // You can handle player events here, for example:
-    player.on('waiting', () => {
-      videojs.log('player is waiting');
+    player.on("waiting", () => {
+      videojs.log("player is waiting");
     });
 
-    player.on('dispose', () => {
-      videojs.log('player will dispose');
+    player.on("dispose", () => {
+      videojs.log("player will dispose");
     });
+  };
+
+  const addVideo = (videoId,playlistId) => {
+    console.log("playlist id in add video: ",playlistId)
+    dispatch(addVideoToPlaylist({videoId, playlistId}));
   };
 
   return (
@@ -48,6 +63,35 @@ const VideoSection = ({ video }) => {
           Subscribe
         </button>
         <VideoLike video={video} />
+
+        <Popup
+          contentStyle={{ width: "20%", borderRadius: "10px" }}
+          trigger={
+            <button className="rounded-full bg-gray-100 px-4 py-2 flex items-center gap-3 hover:bg-gray-200">
+              <IconContext.Provider value={{ size: "25px" }}>
+                <MdPlaylistAdd />
+              </IconContext.Provider>
+              Save
+            </button>
+          }
+          modal
+          nested
+        >
+          {(close) => (
+            <div className="px-4 py-2">Save video to
+              <div>
+                {playlist.map((item,idx)=>(
+                  <p><input
+                  type="checkbox"
+                  className="mr-2 "
+                  onChange={(e) => addVideo(video._id,item._id)}
+                /> {item.name}</p>
+                ))}
+              </div>
+            </div>
+                
+          )}
+        </Popup>
       </div>
       <div className="my-2 bg-gray-100 p-4 rounded-lg">
         <div className="flex gap-4 font-semibold">

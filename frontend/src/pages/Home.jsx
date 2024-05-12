@@ -1,12 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Videos from '../components/Videos'
+import { getCurrentUser } from '../features/userSlice'
+import { useNavigate } from 'react-router-dom'
 // TODO: user is logged in while the in the backend it's logged out. fixed that
 const Home = () => {
   const {user} = useSelector((state) => state.user)
   const show = useSelector((state) => state.show)
-  console.log(show)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  useEffect(()=>{
+    dispatch(getCurrentUser()).then((result)=>{
+      if(result.error){
+        navigate("/login")
+      }
+    })
+  },[])
   return (
     <div className='grid grid-cols-12'>
       {show && <Sidebar />}

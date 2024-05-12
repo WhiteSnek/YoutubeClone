@@ -7,25 +7,29 @@ import VideoSection from "../components/VideoSection";
 import CommentSection from "../components/CommentSection";
 import RecommendedVideos from "../components/RecommendedVideos";
 import Sidebar from "../components/Sidebar";
+import { addVideoToHistory } from "../features/userSlice";
 
 const Video = () => {
   const show = useSelector((state) => state.show);
   const { id } = useParams();
   const dispatch = useDispatch();
   const [video, setVideo] = useState("");
+  console.log(id)
   useEffect(() => {
     dispatch(getVideoById(id)).then((result) => {
       if (result.payload) {
         setVideo(result.payload[0]);
+        dispatch(addVideoToHistory(id))
       }
     });
   }, []);
   console.log(video._id);
   if (video)
     return (
-      <>
-      {show && <div className="fixed left-0 z-10 bg-white w-1/6"><Sidebar /></div>}
-      <div className={`${show?" opacity-40":""}`}>
+      <div className='grid grid-cols-12'>
+        {/* TODO: Set the side bar position to fixed */}
+      {show && <div className="col-span-2 bg-white "><Sidebar /></div>}
+      <div className={`flex gap-10 p-10 ${show?"col-span-10":"col-span-12"}`}>
         <div className={`grid grid-cols-12 py-6 px-24 gap-6 `}>
           <div className="col-span-8">
             <VideoSection video={video} />
@@ -36,7 +40,7 @@ const Video = () => {
           </div>
         </div>
         </div>
-      </>
+      </div>
     );
   else return <div> Loading...</div>;
 };

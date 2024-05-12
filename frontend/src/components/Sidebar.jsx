@@ -96,7 +96,7 @@ const Sidebar = () => {
         ) : (
           <>
             <NavLink
-              to="/history"
+              to="/playlist"
               className={({ isActive }) =>
                 `block px-3 py-2 m-2 rounded-xl duration-200 ${
                   isActive ? "bg-gray-300" : "bg-white"
