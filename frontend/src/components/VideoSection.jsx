@@ -1,20 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IconContext } from "react-icons/lib";
 import { CiBellOn } from "react-icons/ci";
 import { MdPlaylistAdd } from "react-icons/md";
+import { RxCross1 } from "react-icons/rx";
 import { formatRelativeTime } from "../utils/formatRelativeTime";
 import VideoPlayer from "./VideoPlayer";
 import VideoLike from "./VideoLike";
 import { useDispatch, useSelector } from "react-redux";
-import { addVideoToPlaylist } from "../features/playlistSlice";
+import { addVideoToPlaylist, removeVideoFromPlaylist } from "../features/playlistSlice";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 const VideoSection = ({ video }) => {
   const playerRef = React.useRef(null);
   const dispatch = useDispatch();
   // const [playlistId,setPlaylistId] = useState('')
-  const {playlist} = useSelector(state => state.playlist)
+  const { playlist } = useSelector((state) => state.playlist);
   // console.log(playlistId)
+  const [save, setSave] = useState(false);
+  useEffect(() => {
+    const foundVideo = findVideoInPlaylist();
+    if (foundVideo) {
+      setSave(false);
+    } else {
+      setSave(true);
+    }
+  }, []);
+  const findVideoInPlaylist = () => {
+    return playlist.find((item) => item._id === video._id);
+  };
   const videoJsOptions = {
     autoplay: true,
     controls: true,
@@ -41,9 +54,13 @@ const VideoSection = ({ video }) => {
     });
   };
 
-  const addVideo = (videoId,playlistId) => {
-    console.log("playlist id in add video: ",playlistId)
-    dispatch(addVideoToPlaylist({videoId, playlistId}));
+  const addVideo = (videoId, playlistId) => {
+    console.log("playlist id in add video: ", playlistId);
+    dispatch(addVideoToPlaylist({ videoId, playlistId }));
+  };
+  const removeVideo = (videoId, playlistId) => {
+    console.log("playlist id in remove video: ", playlistId);
+    dispatch(removeVideoFromPlaylist({ videoId, playlistId }));
   };
 
   return (
@@ -71,25 +88,40 @@ const VideoSection = ({ video }) => {
               <IconContext.Provider value={{ size: "25px" }}>
                 <MdPlaylistAdd />
               </IconContext.Provider>
-              Save
+              {save ? "Saved" : "Save"}
             </button>
           }
           modal
           nested
         >
           {(close) => (
-            <div className="px-4 py-2">Save video to
+            <div className="px-4 py-2">
+              <div className="flex justify-between pb-4"><p>Save video to</p> <button onClick={()=>close()}><RxCross1 /></button></div>
+              
               <div>
-                {playlist.map((item,idx)=>(
-                  <p><input
-                  type="checkbox"
-                  className="mr-2 "
-                  onChange={(e) => addVideo(video._id,item._id)}
-                /> {item.name}</p>
+                {playlist.map((item, idx) => (
+                  <p>
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      onChange={(e) => {
+                        if (save) {
+                          // Call removeVideo if save is true
+                          removeVideo(video._id, item._id);
+                        } else {
+                          // Call addVideo if save is false
+                          addVideo(video._id, item._id);
+                        }
+                        // Toggle the save state
+                        setSave((prevSave) => !prevSave);
+                      }}
+                      checked={save}
+                    />{" "}
+                    {item.name}
+                  </p>
                 ))}
               </div>
             </div>
-                
           )}
         </Popup>
       </div>

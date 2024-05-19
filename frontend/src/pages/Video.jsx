@@ -30,12 +30,12 @@ const Video = () => {
         {/* TODO: Set the side bar position to fixed */}
       {show && <div className="col-span-2 bg-white "><Sidebar /></div>}
       <div className={`flex gap-10 p-10 ${show?"col-span-10":"col-span-12"}`}>
-        <div className={`grid grid-cols-12 py-6 px-24 gap-6 `}>
+        <div className={`grid grid-cols-12 py-6 gap-2 `}>
           <div className="col-span-8">
             <VideoSection video={video} />
             <CommentSection videoId={video._id} />
           </div>
-          <div className="col-span-4">
+          <div className="col-span-3">
             <RecommendedVideos />
           </div>
         </div>

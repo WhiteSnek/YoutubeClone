@@ -78,6 +78,28 @@ export const removeVideoFromPlaylist = createAsyncThunk(
   }
 );
 
+export const editPlaylist = createAsyncThunk(
+  'playlist/updatePlaylist',
+  async ({ name, description, playlistId }) => {
+    try {
+      
+      console.log(description);
+      const response = await axios.patch(
+        `/playlist/${playlistId}`,
+        { name, description },
+        { withCredentials: true }
+      );
+      console.log(response.data.data)
+      return response.data; // Ensure only serializable data is returned
+    } catch (error) {
+      const errorMessage = error.response.data.match(
+        /<pre>Error: (.*?)<br>/
+      )[1];
+      throw new Error(errorMessage);
+    }
+  }
+);
+
 const playlistSlice = createSlice({
   name: "playlist",
   initialState: {
@@ -125,7 +147,17 @@ const playlistSlice = createSlice({
       })
       .addCase(removeVideoFromPlaylist.rejected, (state, action) => {
         (state.loading = false),(console.log(action.error.message)), (state.error = action.error?.message);
-      });
+      })
+      .addCase(editPlaylist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editPlaylist.fulfilled, (state,action) => {
+        (state.loading = false),(state.playlist = action.payload), (state.error = null);
+      })
+      .addCase(editPlaylist.rejected, (state, action) => {
+        (state.loading = false),(console.log(action.error.message)), (state.error = action.error?.message);
+      })
   },
 });
 

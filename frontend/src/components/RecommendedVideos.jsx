@@ -11,7 +11,7 @@ export const VideosCard = ({item}) =>{
       {isHovered ? (
                 <video
                     src={item.videoFile}
-                    className='aspect-video w-1/2 object-fit rounded-md bg-gray-900'
+                    className='aspect-video max-w-40  object-fit rounded-md bg-gray-900'
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                     autoPlay
@@ -21,7 +21,7 @@ export const VideosCard = ({item}) =>{
             ) : (
                 <img
                     src={item.thumbnail}
-                    className='aspect-video w-1/2 object-fit rounded-md'
+                    className=' aspect-video max-w-40 object-fit rounded-md'
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 />
