@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { formatRelativeTime } from '../utils/formatRelativeTime';
 const VideoCard = ({item}) => {
     const [isHovered, setIsHovered] = useState(false);
-    
-    // TODO: Update view count
   return (
     <Link to={`/videos/${item._id}`} className='col-span-4 h-1/2 p-4 rounded-xl'>
         

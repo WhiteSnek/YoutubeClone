@@ -40,7 +40,7 @@ export const getPlayListById = createAsyncThunk(
 
 export const addVideoToPlaylist = createAsyncThunk(
   "playlist/addVideoToPlaylist",
-  async ({videoId, playlistId}) => {
+  async ({ videoId, playlistId }) => {
     try {
       const add = await axios.patch(
         `/playlist/add/${videoId}/${playlistId}`,
@@ -59,9 +59,9 @@ export const addVideoToPlaylist = createAsyncThunk(
 );
 export const removeVideoFromPlaylist = createAsyncThunk(
   "playlist/removeVideoFromPlaylist",
-  async ({videoId, playlistId}) => {
+  async ({ videoId, playlistId }) => {
     try {
-      console.log("video id: ",videoId,"playlist id: ",playlistId)
+      console.log("video id: ", videoId, "playlist id: ", playlistId);
       const remove = await axios.patch(
         `/playlist/remove/${videoId}/${playlistId}`,
         {},
@@ -79,18 +79,23 @@ export const removeVideoFromPlaylist = createAsyncThunk(
 );
 
 export const editPlaylist = createAsyncThunk(
-  'playlist/updatePlaylist',
+  "playlist/updatePlaylist",
   async ({ name, description, playlistId }) => {
     try {
-      
-      console.log(description);
+      console.log(
+        "name: ",
+        name,
+        " description: ",
+        description,
+        " Id: ",
+        playlistId
+      );
       const response = await axios.patch(
         `/playlist/${playlistId}`,
         { name, description },
         { withCredentials: true }
       );
-      console.log(response.data.data)
-      return response.data; // Ensure only serializable data is returned
+      return response.data.data; // Ensure only serializable data is returned
     } catch (error) {
       const errorMessage = error.response.data.match(
         /<pre>Error: (.*?)<br>/
@@ -100,11 +105,43 @@ export const editPlaylist = createAsyncThunk(
   }
 );
 
+export const deletePlaylist = createAsyncThunk(
+  "playlist/deletePlaylist",
+  async (playlistId) => {
+    try {
+      const response = await axios.delete(`/playlist/${playlistId}`, {
+        withCredentials: true,
+      });
+      return response.data.data;
+    } catch (error) {
+      const errorMessage = error.response.data.match(
+        /<pre>Error: (.*?)<br>/
+      )[1];
+      throw new Error(errorMessage);
+    }
+  }
+);
+
+export const createPlaylist = createAsyncThunk(
+  "playlist/createPlaylist",
+  async (details) => {
+    try {
+      const response = await axios.patch('/playlist/',details,{withCredentials:true});
+      return response.data.data
+    } catch (error) {
+      const errorMessage = error.response.data.match(
+        /<pre>Error: (.*?)<br>/
+      )[1];
+      throw new Error(errorMessage);
+    }
+  }
+)
+
 const playlistSlice = createSlice({
   name: "playlist",
   initialState: {
     loading: false,
-    playlist: [],
+    playlist: null,
     error: null,
   },
   extraReducers: (builder) => {
@@ -123,7 +160,9 @@ const playlistSlice = createSlice({
         state.error = null;
       })
       .addCase(getPlayListById.fulfilled, (state, action) => {
-        (state.loading = false), (state.playlist = action.payload);
+        (state.loading = false),
+          (state.playlist = action.payload),
+          console.log(state.playlist);
       })
       .addCase(getPlayListById.rejected, (state, action) => {
         (state.loading = false), (state.error = action.error?.message);
@@ -146,17 +185,48 @@ const playlistSlice = createSlice({
         (state.loading = false), (state.error = null);
       })
       .addCase(removeVideoFromPlaylist.rejected, (state, action) => {
-        (state.loading = false),(console.log(action.error.message)), (state.error = action.error?.message);
+        (state.loading = false),
+          console.log(action.error.message),
+          (state.error = action.error?.message);
       })
       .addCase(editPlaylist.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(editPlaylist.fulfilled, (state,action) => {
-        (state.loading = false),(state.playlist = action.payload), (state.error = null);
+      .addCase(editPlaylist.fulfilled, (state, action) => {
+        (state.loading = false),
+          (state.playlist = action.payload),
+          console.log(state.playlist),
+          (state.error = null);
       })
       .addCase(editPlaylist.rejected, (state, action) => {
-        (state.loading = false),(console.log(action.error.message)), (state.error = action.error?.message);
+        (state.loading = false),
+          console.log(action.error.message),
+          (state.error = action.error?.message);
+      })
+      .addCase(deletePlaylist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePlaylist.fulfilled, (state, action) => {
+        (state.loading = false), (state.playlist = null), (state.error = null);
+      })
+      .addCase(deletePlaylist.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error?.message;
+      })
+      .addCase(createPlaylist.pending, (state) => {
+        state.loading = true;
+        state.error = null
+      })
+      .addCase(createPlaylist.fulfilled, (state,action) => {
+        state.loading = false;
+        state.playlist = action.payload;
+        state.error = null;
+      })
+      .addCase(createPlaylist.rejected, (state,action)=>{
+        state.loading = false;
+        state.error = action.error?.message;
       })
   },
 });

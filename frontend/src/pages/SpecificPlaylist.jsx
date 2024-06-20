@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { editPlaylist, getPlayListById } from "../features/playlistSlice";
@@ -11,6 +11,7 @@ import { IconContext } from "react-icons/lib";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { RxCross1 } from "react-icons/rx";
+
 const PlaylistCard = ({ item }) => {
   return (
     <Link
@@ -41,34 +42,57 @@ const SpecificPlaylist = () => {
   const [descEditMode, setDescEditMode] = useState(false);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  //   console.log(playlistId)
+
   const show = useSelector((state) => state.show);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getPlayListById(playlistId)).then((result) => {
       if (result.payload) {
-        // console.log("Result payload:",result.payload)
         setPlaylist(result.payload[0]);
+        setTitle(result.payload[0].name);
+        setDesc(result.payload[0].description);
       }
     });
-  }, []);
+  }, [dispatch, playlistId]);
+
   const updatePlaylist = () => {
-    dispatch(editPlaylist({
-        name:title,
-        description: desc === "" ? playlist.description : desc,
-        playlistId: playlistId
-    }))
-}
-  const editTitleMode = () => {
+    dispatch(
+      editPlaylist({
+        name: title,
+        description: desc,
+        playlistId: playlistId,
+      })
+    ).then( (result) => {
+      if(result.payload){
+        setTitle(result.payload.name)
+        setDesc(result.payload.description)
+      }
+    }
+    )
+  };
+
+  const toggleTitleEditMode = () => {
     setTitleEditMode(!titleEditMode);
   };
-  const editDescMode = () => {
+
+  const toggleDescEditMode = () => {
     setDescEditMode(!descEditMode);
   };
-  console.log(title)
+
+  const handleTitleChange = useCallback((e)=>{
+    setTitle(e.target.value)
+    
+  },[])
+
+  const handleDescChange = useCallback((e)=>{
+    setDesc(e.target.value)
+    
+  },[])
+
   if (!playlist) {
     return <div>Loading....</div>;
-  } else
+  } else {
     return (
       <div className="grid grid-cols-12">
         {show && (
@@ -90,7 +114,7 @@ const SpecificPlaylist = () => {
               <img
                 src={playlist.videos[0].thumbnail}
                 alt="cover photo"
-                className="aspect-video rounded-md mx-auto"
+                className="aspect-video w-full object-fit rounded-md mx-auto"
               />
               <Link to={`/playlist/${playlist?._id}`}>
                 <div className="absolute h-full w-full top-0  justify-center text-white items-center rounded-md transition-all delay-100 group-hover:flex hidden bg-gray-900 opacity-50">
@@ -106,12 +130,12 @@ const SpecificPlaylist = () => {
                   <input
                     type="text"
                     className="text-lg min-w-max bg-transparent outline-none border-b-2 border-white"
-                    defaultValue={playlist.name}
+                    value={title}
+                    onChange={handleTitleChange}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        editTitleMode()
-                        setTitle(e.target.value);
-                        updatePlaylist()
+                        toggleTitleEditMode();
+                        updatePlaylist();
                       }
                     }}
                   />
@@ -119,7 +143,7 @@ const SpecificPlaylist = () => {
                 <button
                   title="edit playlist"
                   className="hover:bg-red-300 p-2 rounded-full"
-                  onClick={() => editTitleMode()}
+                  onClick={toggleTitleEditMode}
                 >
                   <IconContext.Provider value={{ size: "20px" }}>
                     <GoPencil />
@@ -135,28 +159,32 @@ const SpecificPlaylist = () => {
                 <p>Last updated on {getExactTime(playlist.updatedAt)}</p>
               </div>
               <div className="flex justify-between items-center">
-              {!descEditMode?<p>{playlist.description}</p>:<input
+                {!descEditMode ? (
+                  <p>{playlist.description}</p>
+                ) : (
+                  <input
                     type="text"
                     className="text-lg min-w-max bg-transparent outline-none border-b-2 border-white"
-                    defaultValue={playlist.description}
+                    value={desc}
+                    onChange={handleDescChange}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        editDescMode()
-                        setDesc(e.target.value);
-                        updatePlaylist()
+                        toggleDescEditMode();
+                        updatePlaylist();
                       }
                     }}
-                  />}
-                  <button
+                  />
+                )}
+                <button
                   title="edit playlist"
                   className="hover:bg-red-300 p-2 rounded-full"
-                  onClick={() => editDescMode()}
+                  onClick={toggleDescEditMode}
                 >
                   <IconContext.Provider value={{ size: "20px" }}>
                     <GoPencil />
                   </IconContext.Provider>
                 </button>
-                </div>
+              </div>
             </div>
           </div>
           <div
@@ -169,6 +197,7 @@ const SpecificPlaylist = () => {
         </div>
       </div>
     );
+  }
 };
 
 export default SpecificPlaylist;

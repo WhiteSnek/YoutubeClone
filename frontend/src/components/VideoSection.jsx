@@ -3,11 +3,12 @@ import { IconContext } from "react-icons/lib";
 import { CiBellOn } from "react-icons/ci";
 import { MdPlaylistAdd } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
+import { FaPlus } from "react-icons/fa6";
 import { formatRelativeTime } from "../utils/formatRelativeTime";
 import VideoPlayer from "./VideoPlayer";
 import VideoLike from "./VideoLike";
 import { useDispatch, useSelector } from "react-redux";
-import { addVideoToPlaylist, removeVideoFromPlaylist } from "../features/playlistSlice";
+import { addVideoToPlaylist, createPlaylist, removeVideoFromPlaylist } from "../features/playlistSlice";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 const VideoSection = ({ video }) => {
@@ -17,6 +18,9 @@ const VideoSection = ({ video }) => {
   const { playlist } = useSelector((state) => state.playlist);
   // console.log(playlistId)
   const [save, setSave] = useState(false);
+  const [add,setAdd] = useState(false)
+  const [details,setDetails] = useState({title:'',description: ''})
+  console.log(add)
   useEffect(() => {
     const foundVideo = findVideoInPlaylist();
     if (foundVideo) {
@@ -62,6 +66,10 @@ const VideoSection = ({ video }) => {
     console.log("playlist id in remove video: ", playlistId);
     dispatch(removeVideoFromPlaylist({ videoId, playlistId }));
   };
+
+  const addPlaylist = () => {
+    dispatch(createPlaylist(details))
+  }
 
   return (
     <div>
@@ -120,6 +128,17 @@ const VideoSection = ({ video }) => {
                     {item.name}
                   </p>
                 ))}
+                <button className="flex gap-3 items-center" onClick={() => setAdd(!add)}>
+                <IconContext.Provider value={{ size: "20px" }}>
+                <FaPlus />
+              </IconContext.Provider>
+              <p>Create new playlist</p>
+                </button>
+                {add && <div className="my-5">
+                  <input type="text" placeholder="Add title" onChange={(e)=>setDetails({...details,title:e.target.value})} className="w-full outline-none border-b-2 border-gray-600 m-2" />
+                  <input type="text" placeholder="Add description" onChange={(e)=>setDetails({...details,description:e.target.value})} className="w-full outline-none border-b-2 border-gray-600 m-2" />
+                  <button className="hover:bg-blue-200 float-right text-blue-400 px-4 py-2 rounded-full" onClick={addPlaylist}>Create</button>
+                  </div>}
               </div>
             </div>
           )}
