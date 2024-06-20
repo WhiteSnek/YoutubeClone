@@ -10,7 +10,8 @@ const Videos = () => {
     }, [])
 
     const { video } = useSelector(state => state.video)
-    const videoFiles = video.videos
+    const videoFiles = video? video.videos : []
+
     const {error} = useSelector(state=>state.video)
     if (videoFiles) {
         return (

@@ -10,13 +10,13 @@ const Home = () => {
   const show = useSelector((state) => state.show)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  // useEffect(()=>{
-  //   dispatch(getCurrentUser()).then((result)=>{
-  //     if(result.error){
-  //       navigate("/login")
-  //     }
-  //   })
-  // },[])
+  useEffect(()=>{
+    dispatch(getCurrentUser()).then((result)=>{
+      if(result.error){
+        navigate("/login")
+      }
+    })
+  },[])
   return (
     <div className='grid grid-cols-12'>
       {show && <Sidebar />}
