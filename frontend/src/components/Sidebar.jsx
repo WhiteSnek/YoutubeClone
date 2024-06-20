@@ -50,7 +50,7 @@ const Sidebar = () => {
         <div className="line bg-gray-200 mx-auto w-11/12 h-px"></div>
 
         <NavLink
-          to={`/${user.username}`}
+          to={`/${user?.username}`}
           className={({ isActive }) =>
             `block px-3 py-2 m-2 rounded-xl duration-200 ${
               isActive ? "bg-gray-300" : "bg-white"
